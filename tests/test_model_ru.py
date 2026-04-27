@@ -5,7 +5,6 @@ import pickle
 from pathlib import Path
 from transformers import AutoTokenizer, BertModel
 
-# Model configuration
 MODEL_DIR = Path(__file__).resolve().parent.parent / 'ml_service' / 'medical_classifier_rubert'
 MODEL_NAME = 'DeepPavlov/rubert-base-cased'
 

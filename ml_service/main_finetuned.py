@@ -1,7 +1,3 @@
-"""
-ML Classification Service with Fine-tuned RuBERT Model
-"""
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 import os

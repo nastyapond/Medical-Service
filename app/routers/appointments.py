@@ -25,7 +25,6 @@ def create_appointment(appointment: AppointmentCreate, current_user: User = Depe
     db.commit()
     db.refresh(db_appointment)
 
-    # Create reminder notification for 1 day before
     reminder_date = appointment.appointment_date - timedelta(days=1)
     notification = Notification(
         user_id=current_user.id,
@@ -80,7 +79,6 @@ def update_appointment(
     if not db_appointment:
         raise HTTPException(status_code=404, detail="Appointment not found")
     
-    # Check if user owns the appointment or is admin
     if db_appointment.user_id != current_user.id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to update this appointment")
     
@@ -101,7 +99,6 @@ def delete_appointment(
     if not db_appointment:
         raise HTTPException(status_code=404, detail="Appointment not found")
     
-    # Check if user owns the appointment or is admin
     if db_appointment.user_id != current_user.id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to delete this appointment")
     

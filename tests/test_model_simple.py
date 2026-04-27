@@ -5,7 +5,6 @@ import pickle
 from pathlib import Path
 from transformers import AutoTokenizer, BertModel
 
-# Model configuration
 MODEL_DIR = Path(__file__).resolve().parent.parent / 'ml_service' / 'medical_classifier_rubert'
 MODEL_NAME = 'DeepPavlov/rubert-base-cased'
 
@@ -26,7 +25,6 @@ class SimpleMultiTaskModel(torch.nn.Module):
             'type_logits': type_logits
         }
 
-# Test samples
 TEST_CASES = [
     {
         'text': 'Боль в груди, потливость, одышка. Это экстренная ситуация.',
@@ -50,47 +48,42 @@ def main():
     print('Testing RuBERT Model')
     print('='*80)
     
-    # Load encoders
     print('\nLoading model components...')
     try:
         with open(MODEL_DIR / 'urgency_encoder.pkl', 'rb') as f:
             urgency_encoder = pickle.load(f)
-        print('✓ Loaded urgency encoder')
+        print('Loaded urgency encoder')
         
         with open(MODEL_DIR / 'request_type_encoder.pkl', 'rb') as f:
             type_encoder = pickle.load(f)
-        print('✓ Loaded type encoder')
+        print('Loaded type encoder')
         
-        # Load model
         model = SimpleMultiTaskModel(
             MODEL_NAME,
             len(urgency_encoder.classes_),
             len(type_encoder.classes_)
         )
-        print(f'✓ Loaded model')
+        print(f'Loaded model')
         
-        # Load weights
         weights_path = MODEL_DIR / 'pytorch_model.bin'
         if weights_path.exists():
             state_dict = torch.load(weights_path, map_location='cpu')
             model.load_state_dict(state_dict)
-            print(f'✓ Loaded model weights from {weights_path}')
+            print(f'Loaded model weights from {weights_path}')
         else:
-            print(f'⚠ Warning: weights file not found at {weights_path}')
+            print(f'Warning: weights file not found at {weights_path}')
         
         model.eval()
         
-        # Load tokenizer
         tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        print('✓ Loaded tokenizer')
+        print('Loaded tokenizer')
         
     except Exception as e:
-        print(f'✗ Error loading components: {e}')
+        print(f'Error loading components: {e}')
         import traceback
         traceback.print_exc()
         return
     
-    # Run tests
     print(f'\n\nRunning {len(TEST_CASES)} test cases...\n')
     passed = 0
     total = len(TEST_CASES)
@@ -102,7 +95,6 @@ def main():
             expected_type = test_case.get('expected_type', '?')
             
             try:
-                # Tokenize
                 encodings = tokenizer(
                     [text],
                     truncation=True,
@@ -111,7 +103,6 @@ def main():
                     return_tensors='pt'
                 )
                 
-                # Predict
                 outputs = model(
                     input_ids=encodings['input_ids'],
                     attention_mask=encodings['attention_mask']
@@ -144,7 +135,6 @@ def main():
                 import traceback
                 traceback.print_exc()
     
-    # Summary
     print('='*80)
     print(f'Results: {passed}/{total} tests passed')
     accuracy = (passed / total) * 100 if total > 0 else 0

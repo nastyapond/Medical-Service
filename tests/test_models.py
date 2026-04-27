@@ -4,7 +4,6 @@ from app.core.security import hash_password, verify_password
 
 class TestUserModel:
     def test_user_creation(self, db_session, test_user_data):
-        """Test user model creation."""
         user = User(
             full_name=test_user_data["full_name"],
             email=test_user_data["email"],
@@ -20,10 +19,8 @@ class TestUserModel:
         assert user.full_name == test_user_data["full_name"]
         assert user.email == test_user_data["email"]
         assert user.phone == test_user_data["phone"]
-        assert user.password_hash != test_user_data["password"]  # Should be hashed
-
+        assert user.password_hash != test_user_data["password"]  
     def test_user_unique_constraints(self, db_session, test_user_data):
-        """Test unique constraints on email and phone."""
         user1 = User(
             full_name="User 1",
             email=test_user_data["email"],
@@ -42,22 +39,19 @@ class TestUserModel:
         db_session.add(user2)
         db_session.commit()
 
-        # Try to create duplicate email
         duplicate_email = User(
             full_name="User 3",
-            email=test_user_data["email"],  # Same email
+            email=test_user_data["email"],
             phone="22222222222",
             password_hash=hash_password("pass3")
         )
 
-        with pytest.raises(Exception):  # Should raise IntegrityError
+        with pytest.raises(Exception): 
             db_session.add(duplicate_email)
             db_session.commit()
 
 class TestRefreshTokenModel:
     def test_refresh_token_creation(self, db_session, test_user_data):
-        """Test refresh token model creation."""
-        # First create a user
         user = User(
             full_name=test_user_data["full_name"],
             email=test_user_data["email"],
@@ -67,7 +61,6 @@ class TestRefreshTokenModel:
         db_session.add(user)
         db_session.commit()
 
-        # Create refresh token
         import secrets
         from datetime import datetime, timedelta
 
@@ -91,7 +84,6 @@ class TestRefreshTokenModel:
 
 class TestPasswordSecurity:
     def test_password_hashing(self):
-        """Test password hashing and verification."""
         password = "MySecurePassword123"
 
         hashed = hash_password(password)

@@ -7,7 +7,6 @@ from app.core.database import get_db, Base
 from app.models.user import User
 from app.core.security import hash_password
 
-# Test database
 TEST_DATABASE_URL = "sqlite:///./test_api.db"
 engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -24,7 +23,6 @@ app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture(scope="function")
 def client():
-    """Create test client with fresh database."""
     Base.metadata.create_all(bind=engine)
     with TestClient(app) as test_client:
         yield test_client
@@ -32,7 +30,6 @@ def client():
 
 @pytest.fixture
 def test_user():
-    """Create test user data."""
     return {
         "full_name": "API Test User",
         "email": "api_test@example.com",
@@ -42,18 +39,14 @@ def test_user():
 
 class TestAuthAPI:
     def test_register_success(self, client, test_user):
-        """Test successful user registration."""
         response = client.post("/auth/register", json=test_user)
 
         assert response.status_code == 200
         assert response.json() == {"message": "User registered successfully"}
 
     def test_register_duplicate_email(self, client, test_user):
-        """Test registration with duplicate email."""
-        # Register first user
         client.post("/auth/register", json=test_user)
 
-        # Try to register with same email
         duplicate_user = test_user.copy()
         duplicate_user["phone"] = "+79999999999"
 
@@ -62,7 +55,6 @@ class TestAuthAPI:
         assert "already exists" in response.json()["detail"]
 
     def test_register_phone_format_error(self, client, test_user):
-        """Test registration with invalid phone format."""
         invalid_user = test_user.copy()
         invalid_user["phone"] = "1234567890"
 
@@ -75,7 +67,6 @@ class TestAuthAPI:
         )
 
     def test_register_password_requirements(self, client, test_user):
-        """Test registration password complexity validation."""
         invalid_user = test_user.copy()
         invalid_user["password"] = "pass1"
 
@@ -88,11 +79,8 @@ class TestAuthAPI:
         )
 
     def test_login_success(self, client, test_user):
-        """Test successful login."""
-        # Register user first
         client.post("/auth/register", json=test_user)
 
-        # Login
         login_data = {
             "email": test_user["email"],
             "password": test_user["password"]
@@ -108,7 +96,6 @@ class TestAuthAPI:
         assert "expires_in" in data
 
     def test_login_invalid_credentials(self, client):
-        """Test login with invalid credentials."""
         login_data = {
             "email": "nonexistent@example.com",
             "password": "wrongpassword"
@@ -119,8 +106,6 @@ class TestAuthAPI:
         assert "Invalid credentials" in response.json()["detail"]
 
     def test_refresh_token(self, client, test_user):
-        """Test refresh token functionality."""
-        # Register and login
         client.post("/auth/register", json=test_user)
 
         login_response = client.post("/auth/login", json={
@@ -130,7 +115,6 @@ class TestAuthAPI:
 
         refresh_token = login_response.json()["refresh_token"]
 
-        # Use refresh token
         refresh_response = client.post("/auth/refresh", json={
             "refresh_token": refresh_token
         })
@@ -144,14 +128,11 @@ class TestAuthAPI:
 
 class TestProtectedEndpoints:
     def test_classify_without_auth(self, client):
-        """Test classify endpoint without authentication."""
         response = client.post("/classify", json={"text": "Test message"})
         assert response.status_code == 403
         assert "Not authenticated" in response.json()["detail"]
 
     def test_classify_with_auth(self, client, test_user):
-        """Test classify endpoint with authentication."""
-        # Register and login
         client.post("/auth/register", json=test_user)
 
         login_response = client.post("/auth/login", json={
@@ -161,7 +142,6 @@ class TestProtectedEndpoints:
 
         access_token = login_response.json()["access_token"]
 
-        # Make authenticated request
         headers = {"Authorization": f"Bearer {access_token}"}
         response = client.post("/classify", json={"text": "У меня болит голова"}, headers=headers)
 
@@ -181,7 +161,6 @@ class TestProtectedEndpoints:
 
         access_token = login_response.json()["access_token"]
 
-        # Get user info
         headers = {"Authorization": f"Bearer {access_token}"}
         response = client.get("/users/me", headers=headers)
 

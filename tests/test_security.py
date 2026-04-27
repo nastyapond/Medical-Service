@@ -18,7 +18,6 @@ class TestSecurityFunctions:
         assert isinstance(token, str)
         assert len(token) > 0
 
-        # Decode token to verify content
         from jose import jwt
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
 
@@ -28,7 +27,6 @@ class TestSecurityFunctions:
         assert "exp" in payload
 
     def test_password_hashing(self):
-        """Test password hashing functions."""
         password = "TestPassword123"
 
         hashed = hash_password(password)
@@ -37,8 +35,6 @@ class TestSecurityFunctions:
         assert not verify_password("WrongPassword", hashed)
 
     def test_refresh_token_operations(self, db_session, test_user_data):
-        """Test refresh token creation and verification."""
-        # Create user first
         from app.models.user import User
         user = User(
             full_name=test_user_data["full_name"],
@@ -49,20 +45,16 @@ class TestSecurityFunctions:
         db_session.add(user)
         db_session.commit()
 
-        # Create refresh token
         refresh_token = create_refresh_token(user.id, db_session)
         assert isinstance(refresh_token, str)
         assert len(refresh_token) > 0
 
-        # Verify refresh token
         user_id = verify_refresh_token(refresh_token, db_session)
         assert user_id == user.id
 
-        # Test invalid token
         invalid_user_id = verify_refresh_token("invalid_token", db_session)
         assert invalid_user_id is None
 
-        # Test expired token (simulate by manually setting old date)
         from app.models.user import RefreshToken
         expired_token = db_session.query(RefreshToken).filter(RefreshToken.user_id == user.id).first()
         expired_token.expires_at = datetime.utcnow() - timedelta(days=1)

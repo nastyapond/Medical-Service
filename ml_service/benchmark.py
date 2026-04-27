@@ -46,7 +46,6 @@ class ModelBenchmark:
         self.results = []
         
     def classify(self, text: str) -> Dict:
-        """Вызвать API классификации"""
         try:
             response = requests.post(
                 f"{self.base_url}/classify",
@@ -59,15 +58,12 @@ class ModelBenchmark:
             return {"error": str(e)}
     
     def benchmark_single(self, test_case: Dict) -> Dict:
-        """Benchmark a single test case."""
         text = test_case["text"]
         
-        # Measure time
         start = time.time()
         result = self.classify(text)
         elapsed = time.time() - start
         
-        # Check correctness
         is_correct = False
         if "error" not in result:
             is_correct = (
@@ -85,7 +81,6 @@ class ModelBenchmark:
         }
     
     def run_benchmark(self) -> Dict:
-        """Run full benchmark suite."""
         print(f"\n{'='*70}")
         print(f"Benchmarking {self.model_type.upper()}")
         print(f"{'='*70}\n")
@@ -106,7 +101,6 @@ class ModelBenchmark:
             if result["is_correct"]:
                 correct_count += 1
             
-            # Collect labels for F1 calculation
             true_urgency = test_case["expected_urgency"]
             true_type = test_case["expected_type"]
             pred_urgency = result["result"].get("urgency", "")
@@ -115,16 +109,15 @@ class ModelBenchmark:
             true_labels.append(f"{true_urgency}|{true_type}")
             pred_labels.append(f"{pred_urgency}|{pred_type}")
             
-            print(f"  ⏱  Time: {result['elapsed']*1000:.0f}ms")
-            print(f"  📊 Urgency: {result['result'].get('urgency')}")
-            print(f"  📝 Type: {result['result'].get('request_type')}")
-            print(f"  ✓ Correct" if result["is_correct"] else f"  ✗ Wrong")
+            print(f"  Time: {result['elapsed']*1000:.0f}ms")
+            print(f"  Urgency: {result['result'].get('urgency')}")
+            print(f"  Type: {result['result'].get('request_type')}")
+            print(f"  Correct" if result["is_correct"] else f"  ✗ Wrong")
             print()
         
         accuracy = (correct_count / len(TEST_CASES)) * 100
         avg_time = total_time / len(TEST_CASES)
         
-        # Calculate F1-score
         from sklearn.preprocessing import LabelEncoder
         le = LabelEncoder()
         all_labels = true_labels + pred_labels
@@ -181,7 +174,6 @@ def print_comparison_table(summaries: list):
 
 
 def main():
-    """Run all benchmarks."""
     print("\n" + "="*70)
     print("ML MODELS BENCHMARK & COMPARISON")
     print("="*70)
@@ -190,7 +182,6 @@ def main():
     
     summaries = []
     
-    # Test RuBERT
     try:
         benchmark_rubert = ModelBenchmark("rubert")
         summary = benchmark_rubert.run_benchmark()
@@ -199,7 +190,6 @@ def main():
     except Exception as e:
         print(f"✗ RuBERT benchmark failed: {e}\n")
     
-    # Test FastText
     try:
         benchmark_fasttext = ModelBenchmark("fasttext")
         summary = benchmark_fasttext.run_benchmark()
@@ -208,7 +198,6 @@ def main():
     except Exception as e:
         print(f"✗ FastText benchmark failed: {e}\n")
     
-    # Test Mock
     try:
         benchmark_mock = ModelBenchmark("mock")
         summary = benchmark_mock.run_benchmark()
@@ -217,7 +206,6 @@ def main():
     except Exception as e:
         print(f"✗ Mock benchmark failed: {e}\n")
     
-    # Print comparison
     if summaries:
         print_comparison_table(summaries)
         print("\n✓ Benchmark complete!")

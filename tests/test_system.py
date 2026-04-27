@@ -2,7 +2,6 @@ import httpx
 import asyncio
 
 async def test_full_system():
-    # Тест ML сервиса напрямую
     print("1. Testing ML service directly...")
     try:
         async with httpx.AsyncClient() as client:
@@ -15,7 +14,6 @@ async def test_full_system():
         print(f"ML Service Error: {e}")
         return
 
-    # Тест backend (нужен токен, так что пропустим пока)
     print("\n2. Backend test skipped (requires authentication)")
 
     print("\nSystem test completed!")

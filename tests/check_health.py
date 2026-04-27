@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
-"""
-Проверка здоровья скрипта для медицинского сервиса приложения
-"""
 
 import requests
 import sys
 import time
 
 def check_service(name, url, timeout=10):
-    """Проверить отвечает ли сервис"""
     try:
         start_time = time.time()
         response = requests.get(url, timeout=timeout)
@@ -25,7 +21,6 @@ def check_service(name, url, timeout=10):
         return False, None
 
 def check_ml_service():
-    """Проверить классификацию ML сервиса"""
     try:
         response = requests.post("http://localhost:5000/classify",
                                json={"text": "У меня болит голова срочно"},
@@ -42,9 +37,7 @@ def check_ml_service():
         return False
 
 def check_backend_auth():
-    """Проверить аутентификацию backend"""
     try:
-        # Попытаться зарегистрировать тестового пользователя
         unique_id = int(time.time())
         register_data = {
             "full_name": "Health Check User",
@@ -60,7 +53,6 @@ def check_backend_auth():
         if response.status_code == 200:
             print("OK Backend Registration: OK")
 
-            # Попытаться войти
             login_response = requests.post("http://localhost:8001/auth/login",
                                          json={"email": register_data["email"], "password": "Password123"},
                                          timeout=10)
@@ -70,7 +62,6 @@ def check_backend_auth():
                 if token:
                     print("OK Backend Login: OK")
 
-                    # Попытаться классификацию через backend
                     headers = {"Authorization": f"Bearer {token}"}
                     classify_response = requests.post("http://localhost:8001/classify",
                                                     json={"text": "У меня болит голова срочно"},
@@ -99,11 +90,9 @@ def check_backend_auth():
 def main():
     print("Checking Medical Service Application Health\n")
 
-    # Проверить сервисы
     backend_ok, _ = check_service("Backend API", "http://localhost:8001/")
     ml_ok, _ = check_service("ML Service", "http://localhost:5000/")
 
-    # Проверить функциональность
     if ml_ok:
         ml_classify_ok = check_ml_service()
     else:

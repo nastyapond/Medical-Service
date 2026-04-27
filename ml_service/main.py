@@ -1,7 +1,3 @@
-"""
-ML Classification Service with RuBERT and FastText support
-"""
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 import os
@@ -87,10 +83,8 @@ async def load_models():
             except Exception as e:
                 logger.error(f"Failed to load fine-tuned RuBERT - {e}")
                 fine_tuned_model = None
-                # Fall back to zero-shot
                 await load_zero_shot_model()
         else:
-            # Load zero-shot model
             await load_zero_shot_model()
     
     elif MODEL_TYPE == "fasttext":
@@ -119,12 +113,9 @@ async def load_models():
             fasttext_type_model = None
 
 def classify_with_rubert(text: str):
-    """Классификация с использованием RuBERT (zero-shot или fine-tuned)"""
-    # Check if fine-tuned model is available
     if fine_tuned_model and tokenizer and device and urgency_encoder and request_type_encoder:
         return classify_with_finetuned(text)
     
-    # Fall back to zero-shot
     if not rubert_classifier:
         return {"urgency": "Неизвестно", "request_type": "Неизвестно", "confidence": "Низкая"}
 
@@ -209,17 +200,14 @@ def classify_with_fasttext(text: str):
         return classify_text_mock(text)
 
     try:
-        # Predict urgency
         urgency_pred = fasttext_urgency_model.predict(text, k=1)
         urgency = urgency_pred[0][0].replace("__label__", "")
         urgency_score = urgency_pred[1][0]
 
-        # Predict request type
         type_pred = fasttext_type_model.predict(text, k=1)
         request_type = type_pred[0][0].replace("__label__", "").replace("_", " ")
         type_score = type_pred[1][0]
 
-        # Confidence based on scores
         avg_score = (urgency_score + type_score) / 2
         if avg_score > 0.7:
             confidence = "Высокая"
@@ -304,7 +292,7 @@ async def classify_request(request: ClassificationRequest):
         result = classify_with_rubert(request.text)
     elif MODEL_TYPE == "fasttext":
         result = classify_with_fasttext(request.text)
-    else:  # mock
+    else: 
         result = classify_text_mock(request.text)
 
     return ClassificationResponse(**result)

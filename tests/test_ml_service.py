@@ -3,11 +3,8 @@ import requests
 from unittest.mock import patch, MagicMock
 
 class TestMLService:
-    """Test ML service functionality."""
 
     def test_ml_service_health(self):
-        """Test ML service health endpoint."""
-        # This test assumes ML service is running
         try:
             response = requests.get("http://localhost:5000/health", timeout=5)
             assert response.status_code == 200
@@ -17,11 +14,9 @@ class TestMLService:
             assert "model_type" in data
             assert data["status"] in ["ready", "loading", "error"]
         except requests.exceptions.RequestException:
-            # ML service not running - skip test
             pytest.skip("ML service not running")
 
     def test_ml_service_classify(self):
-        """Test ML service classify endpoint."""
         try:
             test_text = "У меня болит голова срочно"
             response = requests.post(
@@ -73,12 +68,9 @@ class TestMLService:
             pytest.skip("No ML models available")
 
 class TestMLIntegration:
-    """Test integration between backend and ML service."""
 
     @patch('httpx.AsyncClient.post')
     def test_backend_ml_integration_mock(self, mock_post):
-        """Test backend ML integration with mocked ML service."""
-        # Mock ML service response
         mock_response = MagicMock()
         mock_response.json.return_value = {
             "urgency": "Экстренное",
@@ -89,6 +81,4 @@ class TestMLIntegration:
 
         mock_post.return_value = mock_response
 
-        # Test would go here - need to import and test the classify router
-        # This is a placeholder for more comprehensive integration testing
-        assert True  # Placeholder assertion
+        assert True  # Placeholder

@@ -7,7 +7,6 @@ from app.core.database import Base, get_db
 from app.models.user import User
 from app.core.security import hash_password
 
-# Test database setup
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -41,14 +40,12 @@ def test_register_user():
     assert response.json() == {"message": "User registered successfully"}
 
 def test_register_duplicate_user():
-    # First register
     client.post("/auth/register", json={
         "full_name": "Test User",
         "email": "duplicate@example.com",
         "phone": "123456789",
         "password": "password123"
     })
-    # Try to register again
     response = client.post("/auth/register", json={
         "full_name": "Test User",
         "email": "duplicate@example.com",
@@ -59,14 +56,12 @@ def test_register_duplicate_user():
     assert "User already exists" in response.json()["detail"]
 
 def test_login_success():
-    # Register first
     client.post("/auth/register", json={
         "full_name": "Login Test",
         "email": "login@example.com",
         "phone": "123456789",
         "password": "password123"
     })
-    # Login
     response = client.post("/auth/login", json={
         "email": "login@example.com",
         "password": "password123"

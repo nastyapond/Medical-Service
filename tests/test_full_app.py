@@ -3,9 +3,6 @@ import asyncio
 import time
 
 async def test_application():
-    """Тест полной системы"""
-    
-    # Тест ML сервиса
     print("=" * 50)
     print("ТЕСТИРОВАНИЕ ML СЕРВИСА (порт 5000)")
     print("=" * 50)
@@ -33,7 +30,6 @@ async def test_application():
             except Exception as e:
                 print(f"Ошибка при обращении к ML сервису: {e}")
     
-    # Тест backend
     print("\n" + "=" * 50)
     print("ТЕСТИРОВАНИЕ BACKEND (порт 8001)")
     print("=" * 50)
@@ -42,14 +38,12 @@ async def test_application():
     
     async with httpx.AsyncClient() as client:
         try:
-            # Тест root endpoint
             response = await client.get(f"{backend_url}/")
             print(f"\nRoot endpoint: {response.json()}")
         except Exception as e:
             print(f"Ошибка при обращении к root: {e}")
         
         try:
-            # Тест регистрации с новым пользователем
             timestamp = int(time.time())
             register_data = {
                 "full_name": f"Test User {timestamp}",
@@ -70,7 +64,6 @@ async def test_application():
             return
         
         try:
-            # Тест логина
             login_data = {
                 "email": email,
                 "password": password
@@ -81,10 +74,8 @@ async def test_application():
                 print(f"Логин: OK")
                 print(f"  └─ Токен получен: {token_data.get('access_token', '')[:20]}...")
                 
-                # Используем токен для классификации
                 headers = {"Authorization": f"Bearer {token_data.get('access_token')}"}
                 
-                # Тест /classify endpoint
                 classify_data = {"text": "У меня болит голова"}
                 response = await client.post(
                     f"{backend_url}/classify",
