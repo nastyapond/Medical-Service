@@ -1,0 +1,42 @@
+{
+  "best_metric": 0.46886446886446886,
+  "best_model_checkpoint": "C:\\Users\\nprud\\Desktop\\MAI\\\u0412\u041a\u0420-\u043c\u0430\u0433\u0430\\src\\ml_service\\medical_classifier_rubert\\checkpoint-22",
+  "epoch": 1.0,
+  "eval_steps": 500,
+  "global_step": 22,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 1.0,
+      "grad_norm": 11.597821235656738,
+      "learning_rate": 0.0,
+      "loss": 2.1779,
+      "step": 22
+    },
+    {
+      "epoch": 1.0,
+      "eval_avg_accuracy": 0.6153846153846154,
+      "eval_avg_f1": 0.46886446886446886,
+      "eval_loss": 1.7863215208053589,
+      "eval_runtime": 1.1502,
+      "eval_samples_per_second": 11.302,
+      "eval_steps_per_second": 3.478,
+      "eval_type_accuracy": 0.6153846153846154,
+      "eval_type_f1": 0.46886446886446886,
+      "eval_urgency_accuracy": 0.6153846153846154,
+      "eval_urgency_f1": 0.46886446886446886,
+      "step": 22
+    }
+  ],
+  "logging_steps": 500,
+  "max_steps": 22,
+  "num_input_tokens_seen": 0,
+  "num_train_epochs": 1,
+  "save_steps": 500,
+  "total_flos": 0.0,
+  "train_batch_size": 4,
+  "trial_name": null,
+  "trial_params": null
+}
