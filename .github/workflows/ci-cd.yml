@@ -52,6 +52,18 @@ jobs:
       run: |
         mypy app/ --ignore-missing-imports
 
+    - name: Start application server
+      run: |
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+        sleep 5
+
+    - name: Start ML service
+      run: |
+        cd ml_service
+        MODEL_TYPE=fasttext uvicorn main:app --host 0.0.0.0 --port 5000 &
+        sleep 5
+        cd ..
+
     - name: Run tests
       run: |
         cd ..
@@ -77,7 +89,7 @@ jobs:
 
     - name: Run security scan
       run: |
-        docker run --rm -v $(pwd):/app -w /app python:3.9-slim pip install safety
+        docker run --rm -v $(pwd):/app -w /app python:3.9-slim sh -c "pip install safety && safety check --file requirements.txt"
         safety check --file requirements.txt
 
     - name: Deploy to staging
