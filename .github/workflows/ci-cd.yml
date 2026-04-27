@@ -66,9 +66,7 @@ jobs:
 
     - name: Run tests
       run: |
-        cd src
         PYTHONPATH=. python -m pytest tests/ -v --cov=app --cov-report=xml
-        cd ..
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
