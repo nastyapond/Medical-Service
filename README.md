@@ -125,18 +125,15 @@ python test_integration.py
 
 ### Структура тестов
 
-```
-tests/
-├── __init__.py
-├── conftest.py              # Фикстуры для тестов (БД, клиенты)
-├── test_models.py           # Unit тесты моделей (User, RefreshToken)
-├── test_security.py         # Unit тесты безопасности (JWT, хэширование)
-├── test_api.py              # API интеграционные тесты
-├── test_ml_service.py       # Тесты ML сервиса
-├── test_integration.py      # Полный интеграционный тест
-├── test_both_models.py      # Сравнение ML моделей
-└── README.md                # Документация по тестам
-```
+- __init__.py
+- conftest.py: Фикстуры для тестов (БД, клиенты)
+- test_models.py: Unit тесты моделей (User, RefreshToken)
+- test_security.py: Unit тесты безопасности (JWT, хэширование)
+- test_api.py: API интеграционные тесты
+- test_ml_service.py: Тесты ML сервиса
+- test_integration.py: Полный интеграционный тест
+- test_both_models.py: Сравнение ML моделей
+- README.md: Документация по тестам
 
 ### Покрытие тестирования
 
