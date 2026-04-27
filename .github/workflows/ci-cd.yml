@@ -55,13 +55,13 @@ jobs:
     - name: Start application server
       run: |
         uvicorn app.main:app --host 0.0.0.0 --port 8000 &
-        sleep 5
+        sleep 10
 
     - name: Start ML service
       run: |
         cd ml_service
         MODEL_TYPE=fasttext uvicorn main:app --host 0.0.0.0 --port 5000 &
-        sleep 5
+        sleep 10
         cd ..
 
     - name: Run tests

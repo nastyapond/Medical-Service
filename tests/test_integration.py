@@ -21,7 +21,7 @@ token = login_response.json()["access_token"]
 print("Token received:", token[:50] + "...")
 
 headers = {"Authorization": f"Bearer {token}"}
-classify_response = requests.post("http://localhost:8001/classify", json={"text": "У меня болит голова срочно"}, headers=headers)
+classify_response = requests.post("http://localhost:8000/classify", json={"text": "У меня болит голова срочно"}, headers=headers)
 print("Backend Response Status:", classify_response.status_code)
 print("Backend Response Text:", classify_response.text)
 print("Backend Classification Response:", classify_response.json())
