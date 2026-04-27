@@ -54,10 +54,10 @@ logs/
 *.pkl
 *.bin
 *.safetensors
-*.pt
 *.h5
 *.pb
 *.onnx
+*.pt
 models/
 data/
 

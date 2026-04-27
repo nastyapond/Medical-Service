@@ -9,6 +9,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:///./medical_service.db
+      SECRET_KEY: ci-super-secret-key
+      REDIS_URL: redis://localhost:6379
+      ML_SERVICE_URL: http://localhost:8001
 
     services:
       redis:
