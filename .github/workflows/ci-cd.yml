@@ -54,7 +54,8 @@ jobs:
 
     - name: Run tests
       run: |
-        python -m pytest test_main.py test_integration.py -v --cov=app --cov-report=xml
+        cd ..
+        PYTHONPATH=src python -m pytest tests/test_main.py tests/test_integration.py -v --cov=src/app --cov-report=xml
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
