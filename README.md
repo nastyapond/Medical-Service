@@ -133,7 +133,6 @@ python test_integration.py
 - test_ml_service.py: Тесты ML сервиса
 - test_integration.py: Полный интеграционный тест
 - test_both_models.py: Сравнение ML моделей
-- README.md: Документация по тестам
 
 ### Покрытие тестирования
 
