@@ -50,8 +50,8 @@ def get_all_appointments(
     db: Session = Depends(get_db),
     patient_id: Optional[int] = Query(None),
     doctor_id: Optional[int] = Query(None),
-    sort_by: Optional[str] = Query("appointment_date", enum=["appointment_date", "user_id", "doctor_id"]),
-    sort_order: Optional[str] = Query("asc", enum=["asc", "desc"])
+    sort_by: str = Query("appointment_date", enum=["appointment_date", "user_id", "doctor_id"]),
+    sort_order: str = Query("asc", enum=["asc", "desc"])
 ):
     query = db.query(Appointment)
     
