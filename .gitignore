@@ -1,7 +1,9 @@
 
 doc/
 
-# Python
+# ============================================================================
+# Python & Package Management
+# ============================================================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -29,71 +31,123 @@ venv/
 env/
 ENV/
 .venv/
-.env
 
-# IDE
+# ============================================================================
+# IDE & Editor
+# ============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.sublime-project
+*.sublime-workspace
 
-# OS
+# ============================================================================
+# Operating System
+# ============================================================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
+# ============================================================================
+# Environment & Configuration
+# ============================================================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ============================================================================
 # Logs
+# ============================================================================
 *.log
 logs/
+*.log.*
 
+# ============================================================================
 # Database
+# ============================================================================
 *.db
 *.sqlite3
+*.sqlite
 
-# ML models and data
+# ============================================================================
+# ML Models & Data (Too large for version control)
+# ============================================================================
+# Encoded object files
 *.pkl
+*.pickle
+
+# Neural network weights and models
 *.bin
 *.safetensors
 *.h5
 *.pb
 *.onnx
 *.pt
+
+# Training checkpoints and intermediate outputs
+ml_service/**/checkpoint*/
+ml_service/**/checkpoint*/**
+
+# Root-level data directories
 /models/
 /data/
 
-# Node.js
+# ============================================================================
+# Frontend (Node.js)
+# ============================================================================
 node_modules/
 npm-debug.log*
+npm-debug.log
 yarn-debug.log*
+yarn-debug.log
 yarn-error.log*
+yarn-error.log
 .npm
+.yarn
 .yarn-integrity
+package-lock.json
 
-# Testing
+# ============================================================================
+# Testing & Coverage
+# ============================================================================
 .coverage
+.coverage.*
 .pytest_cache/
 .tox/
 .cache
+.hypothesis/
 nosetests.xml
 coverage.xml
 *.cover
-.hypothesis/
+htmlcov/
 
+# ============================================================================
 # Jupyter Notebook
+# ============================================================================
 .ipynb_checkpoints
+*.ipynb_checkpoints
+*.nbconvert
 
-# Temporary files
+# ============================================================================
+# Temporary Files
+# ============================================================================
 *.tmp
 *.temp
 .tmp/
 .temp/
+*~
+.DS_Store
 
+# ============================================================================
 # Docker
+# ============================================================================
 .dockerignore
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.docker/

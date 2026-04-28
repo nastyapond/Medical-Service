@@ -2,15 +2,28 @@
 
 ## Основное
 
-- `tests/conftest.py` содержит общие фикстуры
-- `tests/requirements.txt` содержит зависимости для тестирования
-- `tests/test_api.py` проверяет API
-- `tests/test_ml_service.py` проверяет ML сервис
-- `tests/test_model_simple.py` проверяет обученную RuBERT модель
-- `tests/test_model_ru.py` содержит дополнительные проверки русскоязычной модели
-- `tests/test_runner.py` запускает набор тестов модели
-- `tests/test_models.py`, `tests/test_security.py`, `tests/test_refresh_tokens.py` проверяют бизнес-логику
-- `tests/test_system.py` и `tests/test_integration.py` проверяют взаимодействие компонентов
+- `conftest.py` — общие фикстуры и конфигурация
+- `requirements.txt` — зависимости для тестирования
+
+### Pytest тесты (автоматические)
+
+Эти тесты запускаются автоматически в CI/CD и при `pytest tests/`:
+
+- `test_api.py` — тесты API endpoints и аутентификации
+- `test_ml_service.py` — тесты ML сервиса  
+- `test_models.py` — тесты ORM моделей (User, RefreshToken, etc.)
+- `test_security.py` — функции безопасности и валидация
+- `test_refresh_tokens.py` — токены обновления
+- `test_runner.py` — тесты инференса RuBERT модели (пропускаются если модели не найдены)
+- `test_integration.py`, `test_main.py`, `test_full_app.py`, `test_system.py` — интеграционные тесты
+
+### Standalone скрипты (ручной запуск)
+
+Эти скрипты предназначены для ручного тестирования и разработки (не собираются pytest):
+
+- `test_model_simple.py` — простая проверка RuBERT модели (запустить: `python test_model_simple.py`)
+- `test_model_ru.py` — расширенные тесты русскоязычной модели (запустить: `python test_model_ru.py`)
+- `check_health.py` — проверка здоровья сервиса
 
 ## Установка
 
@@ -21,42 +34,53 @@ cd tests && pip install -r requirements.txt
 
 ## Запуск тестов
 
-Из корня проекта:
+### Все pytest тесты (рекомендуется)
 
 ```bash
-pytest tests/
-```
+# Из корня проекта
+pytest -v --cov=app --cov-report=xml
 
-Из папки `tests`:
-
-```bash
+# Или из папки tests
 cd tests && pytest .
 ```
 
-Запуск с коротким выводом:
+### Конкретные тесты
 
 ```bash
-pytest tests/ -v --tb=short
+# Только тесты API
+pytest tests/test_api.py -v
+
+# Только ML тесты
+pytest tests/test_runner.py -v
+
+# Только модели
+pytest tests/test_models.py -v
 ```
 
-Запуск конкретного теста:
+### Standalone скрипты (ручной запуск)
 
 ```bash
-pytest tests/test_api.py -v
-pytest tests/test_model_simple.py -v
+# Проверка RuBERT модели (требует файлов модели)
+python tests/test_model_simple.py
+
+# Расширенные тесты
+python tests/test_model_ru.py
 ```
 
 ## ML модель
 
 Расположение обученной модели:
 
-- `ml_service/medical_classifier_rubert/`
-
-Проверка модели:
-
-```bash
-python tests/test_model_simple.py
 ```
+ml_service/medical_classifier_rubert/
+├── pytorch_model.bin          # Веса модели
+├── urgency_encoder.pkl        # Энкодер для urgency
+├── request_type_encoder.pkl   # Энкодер для типа запроса
+└── tokenizer.json             # Конфиг токенайзера
+```
+
+**Примечание:** Файлы модели исключены из git (`.gitignore`) и недоступны в CI.  
+Тесты модели автоматически пропускаются если файлы не найдены.
 
 ## Переменные окружения
 
@@ -78,11 +102,18 @@ export REACT_APP_API_URL=http://localhost:8000
 export DATABASE_URL=sqlite:///./test.db
 ```
 
-## Быстрая проверка путей
+Для CI/CD:
 
 ```bash
-python -c "import torch, transformers; print('ok')"
-python tests/test_model_simple.py
-pytest tests/test_api.py -v
-pytest tests/ -v --tb=short
+export SECRET_KEY="your-secret-key"
+export REDIS_URL="redis://localhost:6379"
 ```
+
+## CI/CD Pipeline
+
+GitHub Actions автоматически запускает:
+
+```bash
+pytest -v --cov=app --cov-report=xml
+```
+ Собирает все 32 теста, пропускает тесты ML моделей если файлов нет, генерирует coverage отчет в `coverage.xml`
