@@ -58,8 +58,8 @@ logs/
 *.pb
 *.onnx
 *.pt
-models/
-data/
+/models/
+/data/
 
 # Node.js
 node_modules/
