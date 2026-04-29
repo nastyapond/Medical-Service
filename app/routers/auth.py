@@ -17,10 +17,13 @@ def register(
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user)
 ):
-    existing_user = db.query(User).filter(User.email == data.email).first()
+    existing_user_email = db.query(User).filter(User.email == data.email).first()
+    existing_user_phone = db.query(User).filter(User.phone == data.phone).first()
 
-    if existing_user:
+    if existing_user_email:
         raise HTTPException(status_code=400, detail="User already exists")
+    if existing_user_phone:
+        raise HTTPException(status_code=400, detail="Phone already in use")
 
     # If no users exist, make first user admin
     user_count = db.query(User).count()

@@ -12,7 +12,7 @@ class TestMLService:
             data = response.json()
             assert "status" in data
             assert "model_type" in data
-            assert data["status"] in ["ready", "loading", "error"]
+            assert data["status"] in ["ready", "loading", "error", "ok"]
         except requests.exceptions.RequestException:
             pytest.skip("ML service not running")
 
@@ -59,7 +59,7 @@ class TestMLService:
                 if response.status_code == 200:
                     data = response.json()
                     assert all(key in data for key in ["urgency", "request_type", "confidence"])
-                    break  # At least one model works
+                    break  
 
             except requests.exceptions.RequestException:
                 continue

@@ -6,7 +6,6 @@ BASE_URL = "http://localhost:8001"
 def test_refresh_tokens():
     print("Тестирование JWT refresh tokens...")
 
-    # Регистрация
     register_data = {
         "full_name": "Refresh Test User",
         "email": "refresh@example.com",
@@ -21,7 +20,6 @@ def test_refresh_tokens():
             print(f"Ошибка регистрации: {response.text}")
             return
 
-        # Вход
         login_data = {
             "email": "refresh@example.com",
             "password": "Password123"
@@ -39,7 +37,6 @@ def test_refresh_tokens():
             print(f"  Access token: {access_token[:50]}...")
             print(f"  Refresh token: {refresh_token[:50]}...")
 
-            # Тестирование refresh
             refresh_data = {"refresh_token": refresh_token}
             response = requests.post(f"{BASE_URL}/auth/refresh", json=refresh_data)
             print(f"Refresh: {response.status_code}")

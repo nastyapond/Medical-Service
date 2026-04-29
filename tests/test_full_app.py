@@ -22,9 +22,9 @@ async def test_application():
                 if response.status_code == 200:
                     result = response.json()
                     print(f"\nЗапрос: {text[:50]}...")
-                    print(f"  ├─ Срочность: {result['urgency']}")
-                    print(f"  ├─ Тип запроса: {result['request_type']}")
-                    print(f"  └─ Уверенность: {result['confidence']}")
+                    print(f"  Срочность: {result['urgency']}")
+                    print(f"  Тип запроса: {result['request_type']}")
+                    print(f"  Уверенность: {result['confidence']}")
                 else:
                     print(f"Ошибка ML сервиса: {response.status_code}")
             except Exception as e:
@@ -72,7 +72,7 @@ async def test_application():
             if response.status_code == 200:
                 token_data = response.json()
                 print(f"Логин: OK")
-                print(f"  └─ Токен получен: {token_data.get('access_token', '')[:20]}...")
+                print(f" Токен получен: {token_data.get('access_token', '')[:20]}...")
                 
                 headers = {"Authorization": f"Bearer {token_data.get('access_token')}"}
                 

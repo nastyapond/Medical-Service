@@ -11,7 +11,6 @@ from app.core.config import settings
 
 class TestSecurityFunctions:
     def test_create_access_token(self):
-        """Test access token creation."""
         data = {"sub": "1", "user": "test@example.com"}
         token = create_access_token(data)
 

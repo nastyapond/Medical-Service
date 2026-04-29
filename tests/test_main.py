@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 from app.main import app
 import pytest
+import time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.database import Base, get_db
@@ -30,41 +31,51 @@ def test_root():
     assert response.json() == {"message": "Medical Request Service API"}
 
 def test_register_user():
+    unique_id = int(time.time() * 1000)
     response = client.post("/auth/register", json={
         "full_name": "Test User",
-        "email": "test@example.com",
-        "phone": "123456789",
-        "password": "password123"
+        "email": f"test_{unique_id}@example.com",
+        "phone": f"+7123456{unique_id % 1000:03d}",
+        "password": "Password123"
     })
     assert response.status_code == 200
     assert response.json() == {"message": "User registered successfully"}
 
 def test_register_duplicate_user():
-    client.post("/auth/register", json={
+    unique_id = int(time.time() * 1000)
+    email = f"duplicate_{unique_id}@example.com"
+    response_1 = client.post("/auth/register", json={
         "full_name": "Test User",
-        "email": "duplicate@example.com",
-        "phone": "123456789",
-        "password": "password123"
+        "email": email,
+        "phone": f"+7123456{unique_id % 1000:03d}",
+        "password": "Password123"
     })
-    response = client.post("/auth/register", json={
+    assert response_1.status_code == 200
+
+    response_2 = client.post("/auth/register", json={
         "full_name": "Test User",
-        "email": "duplicate@example.com",
-        "phone": "123456789",
-        "password": "password123"
+        "email": email,
+        "phone": f"+7123456{(unique_id + 1) % 1000:03d}",
+        "password": "Password123"
     })
-    assert response.status_code == 400
-    assert "User already exists" in response.json()["detail"]
+    assert response_2.status_code == 400
+    assert "User already exists" in response_2.json()["detail"]
 
 def test_login_success():
-    client.post("/auth/register", json={
+    unique_id = int(time.time() * 1000)
+    email = f"login_{unique_id}@example.com"
+    password = "Password123"
+    response_1 = client.post("/auth/register", json={
         "full_name": "Login Test",
-        "email": "login@example.com",
-        "phone": "123456789",
-        "password": "password123"
+        "email": email,
+        "phone": f"+7123456{unique_id % 1000:03d}",
+        "password": password
     })
+    assert response_1.status_code == 200
+
     response = client.post("/auth/login", json={
-        "email": "login@example.com",
-        "password": "password123"
+        "email": email,
+        "password": password
     })
     assert response.status_code == 200
     assert "access_token" in response.json()
