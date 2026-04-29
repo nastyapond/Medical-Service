@@ -104,8 +104,8 @@ def main():
     save_fasttext_format(urgency_texts, urgency_labels, urgency_file, class_prefix='urgency_')
     save_fasttext_format(type_texts, type_labels, type_file, class_prefix='type_')
     
-    print(f"\n✓ Файл срочности сохранён: {urgency_file}")
-    print(f"✓ Файл типа запроса сохранён: {type_file}")
+    print(f"\nФайл срочности сохранён: {urgency_file}")
+    print(f"Файл типа запроса сохранён: {type_file}")
     print(f"\nОбщее количество примеров: {len(urgency_texts)}")
 
 if __name__ == '__main__':

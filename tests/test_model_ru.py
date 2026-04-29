@@ -26,44 +26,44 @@ class SimpleMultiTaskModel(torch.nn.Module):
         }
 
 def main():
-    print('Testing RuBERT Model')
+    print('Тестирование модели RuBERT')
     print('='*80)
     
-    print('\nLoading model components...')
+    print('\nЗагрузка компонентов модели...')
     try:
         with open(MODEL_DIR / 'urgency_encoder.pkl', 'rb') as f:
             urgency_encoder = pickle.load(f)
-        print('Loaded urgency encoder')
+        print('Загружен кодировщик срочности')
         
         with open(MODEL_DIR / 'request_type_encoder.pkl', 'rb') as f:
             type_encoder = pickle.load(f)
-        print('Loaded type encoder')
+        print('Загружен кодировщик типа запроса')
         
         model = SimpleMultiTaskModel(
             MODEL_NAME,
             len(urgency_encoder.classes_),
             len(type_encoder.classes_)
         )
-        print('Created model')
+        print('Модель создана')
         
         weights_path = MODEL_DIR / 'pytorch_model.bin'
         if weights_path.exists():
             state_dict = torch.load(weights_path, map_location='cpu')
             model.load_state_dict(state_dict)
-            print(f'Loaded weights from {weights_path}')
+            print(f'Загружены веса из {weights_path}')
         
         model.eval()
         
         tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        print('Loaded tokenizer')
+        print('Загружен токенизатор')
         
     except Exception as e:
-        print(f'Error: {e}')
+        print(f'Ошибка: {e}')
         import traceback
         traceback.print_exc()
         return
     
-    print('\nRunning test cases...\n')
+    print('\nЗапуск тестов...\n')
     
     test_texts = [
         'Bolyat' + chr(39) + ' v grudi, silnaya odyshka, poteniye',
@@ -93,13 +93,13 @@ def main():
                 pred_urgency = urgency_encoder.inverse_transform([urgency_idx])[0]
                 pred_type = type_encoder.inverse_transform([type_idx])[0]
                 
-                print(f'Test {i}:')
-                print(f'  Urgency: {pred_urgency}')
-                print(f'  Type: {pred_type}')
+                print(f'Тест {i}:')
+                print(f'  Срочность: {pred_urgency}')
+                print(f'  Тип: {pred_type}')
                 print()
                     
             except Exception as e:
-                print(f'Test {i}: ERROR - {e}')
+                print(f'Тест {i}: ОШИБКА - {e}')
                 import traceback
                 traceback.print_exc()
     

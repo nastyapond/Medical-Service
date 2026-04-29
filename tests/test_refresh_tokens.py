@@ -33,22 +33,22 @@ def test_refresh_tokens():
             access_token = tokens.get("access_token")
             refresh_token = tokens.get("refresh_token")
 
-            print("Получены tokens:")
-            print(f"  Access token: {access_token[:50]}...")
-            print(f"  Refresh token: {refresh_token[:50]}...")
+            print("Получены токены:")
+            print(f"  Токен доступа: {access_token[:50]}...")
+            print(f"  Токен обновления: {refresh_token[:50]}...")
 
             refresh_data = {"refresh_token": refresh_token}
             response = requests.post(f"{BASE_URL}/auth/refresh", json=refresh_data)
-            print(f"Refresh: {response.status_code}")
+            print(f"Обновление токена: {response.status_code}")
 
             if response.status_code == 200:
                 new_tokens = response.json()
-                print("Новые tokens получены:")
-                print(f"  New access: {new_tokens.get('access_token')[:50]}...")
-                print(f"  New refresh: {new_tokens.get('refresh_token')[:50]}...")
-                print("OK - Refresh tokens работают!")
+                print("Новые токены получены:")
+                print(f"  Новый токен доступа: {new_tokens.get('access_token')[:50]}...")
+                print(f"  Новый токен обновления: {new_tokens.get('refresh_token')[:50]}...")
+                print("Токены обновления работают!")
             else:
-                print(f"Ошибка refresh: {response.text}")
+                print(f"Ошибка обновления: {response.text}")
         else:
             print(f"Ошибка входа: {response.text}")
 

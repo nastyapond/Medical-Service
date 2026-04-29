@@ -310,24 +310,20 @@ Authorization: Bearer <access_token>
 ### Переменные окружения (.env)
 
 ```bash
-# Database
 DATABASE_URL=postgresql://user:password@localhost:5432/medical_service
 # или для SQLite
 DATABASE_URL=sqlite:///./medical_service.db
 
-# Security
 SECRET_KEY=your-secret-key-here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_DAYS=7
 
-# ML Service
 ML_SERVICE_URL=http://localhost:5000
 
 # Redis (опционально)
 REDIS_URL=redis://localhost:6379
 
-# CORS
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
 ```
 

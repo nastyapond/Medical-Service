@@ -12,7 +12,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     phone: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
-    role: Mapped[str] = mapped_column(String, default="user")  # "user" or "admin"
+    role: Mapped[str] = mapped_column(String, default="user")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 

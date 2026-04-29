@@ -34,7 +34,7 @@ urgency_encoder = None
 type_encoder = None
 
 try:
-    print('Loading ML model files...')
+    print('Загрузка файлов ML модели...')
     
     with open(MODEL_DIR / 'urgency_encoder.pkl', 'rb') as f:
         urgency_encoder = pickle.load(f)
@@ -55,7 +55,7 @@ try:
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-    print('ML model loaded successfully')
+    print('ML модель успешно загружена')
     print(f'  Urgency classes: {urgency_encoder.classes_}')
     print(f'  Type classes: {type_encoder.classes_}\n')
     

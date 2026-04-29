@@ -11,13 +11,13 @@ def check_service(name, url, timeout=10):
         response_time = time.time() - start_time
 
         if response.status_code == 200:
-            print(f"OK {name}: OK ({response_time:.2f}s)")
+            print(f"УСПЕШНО {name}: ответ получен ({response_time:.2f}с)")
             return True, response.json()
         else:
-            print(f"FAIL {name}: HTTP {response.status_code}")
+            print(f"ОШИБКА {name}: HTTP {response.status_code}")
             return False, None
     except requests.exceptions.RequestException as e:
-        print(f"FAIL {name}: Connection failed - {e}")
+        print(f"ОШИБКА {name}: не удалось подключиться - {e}")
         return False, None
 
 def check_ml_service():
@@ -27,13 +27,13 @@ def check_ml_service():
                                timeout=30)
         if response.status_code == 200:
             data = response.json()
-            print(f"OK ML Classification: {data}")
+            print(f"УСПЕШНО классификация ML: {data}")
             return True
         else:
-            print(f"FAIL ML Classification: HTTP {response.status_code}")
+            print(f"ОШИБКА классификации ML: HTTP {response.status_code}")
             return False
     except Exception as e:
-        print(f"FAIL ML Classification: {e}")
+        print(f"ОШИБКА классификации ML: {e}")
         return False
 
 def check_backend_auth():
@@ -51,7 +51,7 @@ def check_backend_auth():
                                timeout=10)
 
         if response.status_code == 200:
-            print("OK Backend Registration: OK")
+            print("УСПЕШНО регистрация в backend")
 
             login_response = requests.post("http://localhost:8001/auth/login",
                                          json={"email": register_data["email"], "password": "Password123"},
@@ -60,7 +60,7 @@ def check_backend_auth():
             if login_response.status_code == 200:
                 token = login_response.json().get("access_token")
                 if token:
-                    print("OK Backend Login: OK")
+                    print("УСПЕШНО вход в backend")
 
                     headers = {"Authorization": f"Bearer {token}"}
                     classify_response = requests.post("http://localhost:8001/classify",
@@ -69,26 +69,26 @@ def check_backend_auth():
                                                     timeout=30)
 
                     if classify_response.status_code == 200:
-                        print("OK Backend Classification: OK")
+                        print("УСПЕШНО классификация через backend")
                         return True
                     else:
-                        print(f"FAIL Backend Classification: HTTP {classify_response.status_code}")
+                        print(f"ОШИБКА классификации backend: HTTP {classify_response.status_code}")
                         return False
                 else:
-                    print("FAIL Backend Login: No token received")
+                    print("ОШИБКА входа в backend: токен не получен")
                     return False
             else:
-                print(f"FAIL Backend Login: HTTP {login_response.status_code}")
+                print(f"ОШИБКА входа в backend: HTTP {login_response.status_code}")
                 return False
         else:
-            print(f"FAIL Backend Registration: HTTP {response.status_code} - {response.text}")
+            print(f"ОШИБКА регистрации backend: HTTP {response.status_code} - {response.text}")
             return False
     except Exception as e:
         print(f"FAIL Backend Auth: {e}")
         return False
 
 def main():
-    print("Checking Medical Service Application Health\n")
+    print("Проверка работоспособности медицинского приложения\n")
 
     backend_ok, _ = check_service("Backend API", "http://localhost:8001/")
     ml_ok, _ = check_service("ML Service", "http://localhost:5000/")
@@ -104,18 +104,18 @@ def main():
         backend_auth_ok = False
 
     print("\n" + "="*50)
-    print("SUMMARY:")
-    print(f"Backend API: {'OK' if backend_ok else 'FAIL'}")
-    print(f"ML Service: {'OK' if ml_ok else 'FAIL'}")
-    print(f"ML Classification: {'OK' if ml_classify_ok else 'FAIL'}")
-    print(f"Backend Auth & Classification: {'OK' if backend_auth_ok else 'FAIL'}")
+    print("ИТОГ:")
+    print(f"Backend API: {'УСПЕШНО' if backend_ok else 'ОШИБКА'}")
+    print(f"ML Service: {'УСПЕШНО' if ml_ok else 'ОШИБКА'}")
+    print(f"ML Classification: {'УСПЕШНО' if ml_classify_ok else 'ОШИБКА'}")
+    print(f"Backend Auth & Classification: {'УСПЕШНО' if backend_auth_ok else 'ОШИБКА'}")
 
     all_ok = backend_ok and ml_ok and ml_classify_ok and backend_auth_ok
     if all_ok:
-        print("\nAll services are working correctly!")
+        print("\nВсе сервисы работают корректно!")
         sys.exit(0)
     else:
-        print("\nSome services have issues. Check the output above.")
+        print("\nНекоторые сервисы работают с ошибками. Проверьте вывод выше.")
         sys.exit(1)
 
 if __name__ == "__main__":
